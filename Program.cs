@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using Org.BouncyCastle.Asn1.Misc;
@@ -11,14 +11,13 @@ namespace cs
 
         public interface IPersonDal
         {
-            void GetAll(); // Tüm ürünleri getiren metot
-            person GetById(int id); // Belirli bir ürünü id'ye göre getiren metot
-            void Add(person person); // Yeni bir ürün ekleyen metot
-            void Count(); // Bir ürünü güncelleyen metot
-            void Add(int id, string name, int price); // Bir ürünü silen metot
-            void Update(person p);
-            void Delete(int id);
-
+            void GetAll(); // Method to get all products
+            person GetById(int id); // Method to get a product by ID
+            void Add(person person); // Method to add a new product
+            void Count(); // Method to count the total number of products
+            void Add(int id, string name, int price); // Method to add a product with specific details
+            void Update(person p); // Method to update a product
+            void Delete(int id); // Method to delete a product
         }
         class MySQLDal : IPersonDal
         {
@@ -39,7 +38,7 @@ namespace cs
                 try
                 {
                     connection.Open();
-                    System.Console.WriteLine("BAĞLANTI SAĞLANDI");
+                    System.Console.WriteLine("SUCCESSFULLY CONNECTED");
                     string sql = "Select * from products";
                     MySqlCommand comm = new MySqlCommand(sql, connection);
                     MySqlDataReader read = comm.ExecuteReader();
@@ -56,7 +55,7 @@ namespace cs
                 }
                 catch (Exception e)
                 {
-                    System.Console.WriteLine("HATA MESAJI::" + e.Message);
+                    System.Console.WriteLine("ERROR MESSAGE::" + e.Message);
 
 
                 }
@@ -73,7 +72,7 @@ namespace cs
 
             public void GetAll()
             {
-                if (persons.Count == 0) // Eğer veri henüz çekilmediyse
+                if (persons.Count == 0) // IF DATA HAS NOT BEEN TAKEN YET
                 {
                     GetMySqlConnection(); // Veriyi çek
                 }
@@ -97,7 +96,7 @@ namespace cs
                     try
                     {
                         connection.Open();
-                        System.Console.WriteLine("bağlantı başarılı.DEDİĞİNİZ İD YE SAHİP OLAN KİŞİ BULUNUYOR..");
+                        System.Console.WriteLine("SUCCESSFULLY CONNECTED.");
 
                         string sql = "SELECT * FROM products WHERE id = @id";
                         MySqlCommand command = new MySqlCommand(sql, connection);
@@ -107,11 +106,11 @@ namespace cs
                         if (read.HasRows)
                         {
                             person = new person() { id = id, name = read["name"].ToString(), price = int.Parse(read["fiyat"].ToString()) };
-                            System.Console.WriteLine($"{id} BU İD YE SAHİP ADAM VAR. DOLDURULDU");
+                            System.Console.WriteLine($"WE FOUND THE PERSON WHO HAS THE İD **{id}**.");
                         }
                         else
                         {
-                            System.Console.WriteLine("dediğiniz id ye sahip adam yok. null değer dönüyor . ");
+                            System.Console.WriteLine("THERE IS NO ONE WITH THIS ID");
                         }
                     }
                     catch (Exception e)
@@ -126,7 +125,7 @@ namespace cs
                 try
                 {
                     persons.Add(person);
-                    System.Console.WriteLine("yeni kişi eklendi.");
+                    System.Console.WriteLine("SUCCESSFULLY ADDED NEW PERSON");
                 }
                 catch (Exception e)
                 {
@@ -273,12 +272,12 @@ namespace cs
 
         static void Main(string[] args)
         {
-
+            /*SOME EXAMPLES  */
 
             PersonManager person = new PersonManager(new MySQLDal());
             person.Count();
-            person.Add(6, "YENİ NAME", 234);
-            person p = new person() { id = 1, name = "update edilen", price = 5 };
+            person.Add(6, "NEW NAME", 234);
+            person p = new person() { id = 1, name = "UPDATED", price = 5 };
             person.Update(p);
             person.Delete(5);
 
